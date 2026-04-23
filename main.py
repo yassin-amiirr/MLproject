@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-# ------------------ Page Config ------------------
+# ------------------ Page Config ----------------------
 st.set_page_config(page_title="ML Project", layout="wide")
 
 # ------------------ Custom CSS ------------------
