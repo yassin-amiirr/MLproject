@@ -3,10 +3,6 @@ import pandas as pd
 
 # ------------------ Page Config ----------------------
 st.set_page_config(page_title="ML Project", layout="wide")
-
-
-x=10
-y="Yassin"
 # ------------------ Custom CSS ------------------
 st.markdown("""
     <style>
