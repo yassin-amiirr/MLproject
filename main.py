@@ -1,11 +1,6 @@
 import streamlit as st
 import pandas as pd
 
-
-# yassin branch and elsharkawy
-
-
-
 # ------------------ Page Config ----------------------
 st.set_page_config(page_title="ML Project", layout="wide")
 
