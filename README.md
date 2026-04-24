@@ -5,14 +5,14 @@
 This project aims to predict car prices using Machine Learning based on features such as brand, model, year, mileage, and other specifications.
 The goal is to build a model that helps estimate the market value of cars accurately.
 
----
+
 
 ## 📊 Dataset
 
 * Contains car details (brand, year, mileage, etc.)
 * Target: **Car Price**
 
----
+
 
 ## ⚙️ Technologies Used
 
@@ -22,7 +22,7 @@ The goal is to build a model that helps estimate the market value of cars accura
 * Matplotlib / Seaborn
 * Streamlit
 
----
+
 
 ## 🔍 Workflow
 
@@ -33,7 +33,7 @@ The goal is to build a model that helps estimate the market value of cars accura
 *  Model Training (Regression Models)
 *  Model Evaluation
 
----
+
 
 
 ## 👥 Team Members
