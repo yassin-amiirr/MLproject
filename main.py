@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from pages.model_page import show_model_page
 
 # ------------------ Page Config ----------------------
 st.set_page_config(page_title="ML Project", layout="wide")
@@ -49,10 +50,17 @@ st.markdown("""
 # ------------------ Title ------------------
 st.markdown('<div class="main-title">ML Project</div>', unsafe_allow_html=True)
 
+# ------------------ Navigation State ------------------
+PAGES = ["File Upload", "Visualization", "Preprocessing", "Model Selection", "Evaluation"]
+
+if "sidebar_page" not in st.session_state:
+    st.session_state.sidebar_page = PAGES[0]
+
 # ------------------ Sidebar Navigation ------------------
 page = st.sidebar.radio(
     "Go to Page:",
-    ["File Upload", "Visualization", "Preprocessing", "Model Selection", "Evaluation"]
+    PAGES,
+    key="sidebar_page"
 )
 
 # ------------------ Page 1: File Upload ------------------
@@ -123,9 +131,26 @@ elif page == "Preprocessing":
     st.info("This page will be implemented next.")
 
 elif page == "Model Selection":
-    st.title("4- Model Selection (Page 4)")
-    st.info("This page will be implemented next.")
+    show_model_page()
 
 elif page == "Evaluation":
     st.title("5- Model Evaluation (Page 5)")
     st.info("This page will be implemented next.")
+
+# ------------------ Bottom Navigation Buttons ------------------
+st.markdown("---")
+col1, col2, col3 = st.columns([1, 2, 1])
+
+current_index = PAGES.index(st.session_state.sidebar_page)
+
+with col1:
+    if current_index > 0:
+        if st.button("⬅️ Previous", use_container_width=True):
+            st.session_state.sidebar_page = PAGES[current_index - 1]
+            st.rerun()
+
+with col3:
+    if current_index < len(PAGES) - 1:
+        if st.button("Next ➡️", use_container_width=True):
+            st.session_state.sidebar_page = PAGES[current_index + 1]
+            st.rerun()
