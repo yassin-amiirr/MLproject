@@ -273,14 +273,7 @@ def run_clustering(df_encoded):
             df_preview = df_encoded.copy()
             df_preview["Cluster"] = clusters
 
-            st.session_state["evaluation_results"] = {
-                "task": "Clustering",
-                "model_name": "K-Means",
-                "metrics": {
-                    "Silhouette Score": sil_score
-                },
-                "clustered_data": df_preview.head(50)
-            }
-            
-        except Exception as e:
-            st.error(f"Clustering failed: {e}")
+                st.success("K-Means ran successfully.")
+                st.write(f"**Silhouette Score:** {sil_score:.4f}")
+                st.subheader("Clustered Data Preview")
+                st.dataframe(df_result.head())
