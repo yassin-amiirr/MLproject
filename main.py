@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from pages.model_page import show_model_page
+from pages.preprocessing_page import show_preprocessing_page
 
 st.set_page_config(page_title="ML Project", layout="wide")
 
@@ -100,9 +101,7 @@ elif page == "Visualization":
     st.info("This page will be implemented next.")
 
 elif page == "Preprocessing":
-    st.title("3- Preprocessing (Page 3)")
-    st.info("This page will be implemented next.")
-
+    show_preprocessing_page()
 elif page == "Model Selection":
     show_model_page()
 

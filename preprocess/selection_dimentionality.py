@@ -57,19 +57,18 @@ def feature_selection_ui(data):
         st.warning("RFE requires numeric columns. Please select numeric features.")
         return data
 
-    # Automatically determine model type
-    is_classification = data[target_col].nunique() < 20 
+    is_classification = data[target_col].nunique() < 20
     if len(selected_cols) > 1:
         n_features = st.slider(
-            "Number of features to retain:", 
-            min_value=1, 
-            max_value=len(selected_cols), 
+            "Number of features to retain:",
+            min_value=1,
+            max_value=len(selected_cols),
             value=min(len(selected_cols), 5)
         )
     else:
         n_features = 1
         st.info("Note: Only one feature selected, it will be retained.") 
-    if st.button("بدء اختيار الخصائص"):
+    if st.button("Start Feature Selection"):
         model =None
         if is_classification:
             model = RandomForestClassifier(n_estimators=50, random_state=42)
