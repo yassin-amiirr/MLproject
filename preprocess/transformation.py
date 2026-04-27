@@ -54,7 +54,7 @@ def transform_data(data):
                 transformed_df = transformed_df.drop(columns=selected_cols)
                 transformed_df = pd.concat([transformed_df, poly_df], axis=1)
 
-            st.success(f"✅ Data transformed successfully using {transformation_method}!")
+            st.success(f" Data transformed successfully using {transformation_method}!")
             st.dataframe(transformed_df.head())
             
             return transformed_df

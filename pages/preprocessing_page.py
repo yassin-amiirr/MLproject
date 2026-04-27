@@ -12,10 +12,10 @@ st.set_page_config(page_title="Preprocessing", layout="wide")
 
 
 if "df" not in st.session_state or st.session_state.df is None:
-    st.warning("يرجى رفع ملف البيانات أولاً.")
+    st.warning("Please upload the dataset file first.")
 else:
     df = st.session_state.get("df", None)
-    tab1, tab2, tab3 = st.tabs(["التحويل (Transformation)", "اختيار الخصائص (RFE)", "تقليل الأبعاد (PCA)"])
+    tab1, tab2, tab3 = st.tabs(["Transformation", "Feature Selection (RFE)", "Dimensionality Reduction (PCA)"])
 
     with tab1:
         st.session_state.df = transform_data(st.session_state.df)
@@ -29,4 +29,4 @@ else:
 
     st.divider()
     if st.button("حفظ البيانات النهائية للتدريب 💾"):
-        st.success("تم حفظ البيانات! جاهزة الآن لمرحلة الـ Model Selection.")
+        st.success("Data saved! Ready for Model Selection.")
