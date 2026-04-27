@@ -66,9 +66,9 @@ page = st.sidebar.radio(
 # ------------------ Page 1: File Upload ------------------
 if page == "File Upload":
     st.markdown('<div class="section-box">', unsafe_allow_html=True)
-    st.markdown('<div class="sub-title">1- File Upload (Page 1)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-title">📁 1- File Upload & Data Overview</div>', unsafe_allow_html=True)
     st.markdown(
-        '<div class="info-text">Upload dataset files with multiple supported extensions: CSV, Excel</div>',
+        '<div class="info-text">Upload your dataset to get started. Supported formats: CSV, Excel (XLSX, XLS).</div>',
         unsafe_allow_html=True
     )
 
@@ -79,18 +79,20 @@ if page == "File Upload":
         st.session_state.file_name = None
 
     uploaded_file = st.file_uploader(
-        "Choose a CSV or Excel file",
-        type=["csv", "xlsx", "xls"]
+        "Choose a dataset file",
+        type=["csv", "xlsx", "xls"],
+        help="Make sure your file has a header row."
     )
 
     if uploaded_file is not None:
         try:
             # Read file based on extension
             if uploaded_file.name.endswith(".csv"):
-                st.session_state.df = pd.read_csv(uploaded_file)
+                df_temp = pd.read_csv(uploaded_file)
             else:
-                st.session_state.df = pd.read_excel(uploaded_file)
+                df_temp = pd.read_excel(uploaded_file)
             
+            st.session_state.df = df_temp
             st.session_state.file_name = uploaded_file.name
 
         except Exception as e:
@@ -98,26 +100,28 @@ if page == "File Upload":
 
     # Display the data if it exists in session_state (whether just uploaded or previously uploaded)
     if st.session_state.df is not None:
-        # Confirmation Message
-        st.markdown(
-            f'<div class="success-box">✅ File loaded successfully: {st.session_state.file_name}</div>',
-            unsafe_allow_html=True
-        )
+        st.success(f"✅ Active Dataset: **{st.session_state.file_name}**")
 
-        # Show dataset preview
-        st.subheader("Dataset Preview")
-        st.dataframe(st.session_state.df.head())
-
-        # Optional basic info
-        st.subheader("Dataset Info")
-        st.write("Rows, Columns:", st.session_state.df.shape)
-        st.write("Columns:", list(st.session_state.df.columns))
-
-        # Button to clear data
-        if st.button("Clear Dataset"):
-            st.session_state.df = None
-            st.session_state.file_name = None
-            st.rerun()
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            # Show dataset preview
+            with st.expander("🔍 Dataset Preview", expanded=True):
+                st.dataframe(st.session_state.df.head(10), use_container_width=True)
+                st.caption(f"Showing first 10 rows of {len(st.session_state.df)} total rows.")
+        
+        with col2:
+            # Optional basic info
+            with st.expander("📊 Dataset Info", expanded=True):
+                st.write("**Rows:**", st.session_state.df.shape[0])
+                st.write("**Columns:**", st.session_state.df.shape[1])
+                st.write("**Missing Values:**", st.session_state.df.isnull().sum().sum())
+                
+                # Button to clear data
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.button("🗑️ Clear Dataset", use_container_width=True, type="secondary"):
+                    st.session_state.df = None
+                    st.session_state.file_name = None
+                    st.rerun()
 
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -134,8 +138,8 @@ elif page == "Model Selection":
     show_model_page()
 
 elif page == "Evaluation":
-    st.title("5- Model Evaluation (Page 5)")
-    st.info("This page will be implemented next.")
+    from pages.evaluation_page import show_evaluation_page
+    show_evaluation_page()
 
 # ------------------ Bottom Navigation Buttons ------------------
 st.markdown("---")
@@ -143,14 +147,16 @@ col1, col2, col3 = st.columns([1, 2, 1])
 
 current_index = PAGES.index(st.session_state.sidebar_page)
 
+def go_previous():
+    st.session_state.sidebar_page = PAGES[current_index - 1]
+
+def go_next():
+    st.session_state.sidebar_page = PAGES[current_index + 1]
+
 with col1:
     if current_index > 0:
-        if st.button("⬅️ Previous", use_container_width=True):
-            st.session_state.sidebar_page = PAGES[current_index - 1]
-            st.rerun()
+        st.button("⬅️ Previous", use_container_width=True, on_click=go_previous)
 
 with col3:
     if current_index < len(PAGES) - 1:
-        if st.button("Next ➡️", use_container_width=True):
-            st.session_state.sidebar_page = PAGES[current_index + 1]
-            st.rerun()
+        st.button("Next ➡️", use_container_width=True, on_click=go_next)
