@@ -2,41 +2,52 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-
 def show_visualization_page():
-    st.title("📊 Data Visualization")
-
-    # Checking if data exists in session_state from the upload page
+    st.title(":bar_chart: Dynamic Data Visualization")
     if 'df' not in st.session_state:
-        st.warning("Please upload a dataset first in the 'File Upload' page.")
+        st.warning("Please upload a dataset first.")
         return
-
     df = st.session_state['df']
-
-    st.subheader("Explore your data through visual charts")
-
-    # Layout: Top Row (Line Plot)
-    st.markdown("### 1. Price Trends")
-    fig1, ax1 = plt.subplots(figsize=(10, 4))
-    sns.lineplot(x="Year", y="Price", data=df, ax=ax1, marker='o', color='royalblue')
-    ax1.set_title("Price over Years")
-    st.pyplot(fig1)
-
+    all_columns = df.columns.tolist()
+    numeric_columns = df.select_dtypes(include=['number']).columns.tolist()
+    categorical_columns = df.select_dtypes(exclude=['number']).columns.tolist()
+    # إذا لم يجد أعمدة تصنيفية، استخدم كل الأعمدة
+    if not categorical_columns:
+        categorical_columns = all_columns
+    if not numeric_columns:
+        st.error("The uploaded dataset doesn't contain any numerical columns for plotting.")
+        return
+    st.info("Customize your plots by selecting columns below.")
+    # --- Section 1: Line Plot ---
+    st.markdown("### 1. Trend Analysis (Line Plot)")
+    col_x_line = st.selectbox("Select X-axis:", all_columns, key='x_line')
+    col_y_line = st.selectbox("Select Y-axis:", numeric_columns, key='y_line')
+    if col_x_line and col_y_line:
+        fig1, ax1 = plt.subplots(figsize=(10, 4))
+        sns.lineplot(x=col_x_line, y=col_y_line, data=df, ax=ax1, marker='o')
+        st.pyplot(fig1)
     st.divider()
+    # --- Section 2: Box Plot ---
+    st.markdown("### 2. Distribution Analysis (Box Plot)")
+    col_box_x = st.selectbox("Select Category (X-axis):", categorical_columns, key='box_x')
+    col_box_y = st.selectbox("Select Value (Y-axis):", numeric_columns, key='box_y')
 
-    # Layout: Bottom Row (Two columns for Scatter and Box plots)
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown("### 2. Mileage vs Price")
-        fig2, ax2 = plt.subplots()
-        sns.scatterplot(x="Mileage", y="Price", data=df, hue="Condition", ax=ax2)
-        ax2.set_title("Correlation between Mileage and Price")
+    if col_box_x and col_box_y:
+        fig2, ax2 = plt.subplots(figsize=(10, 5))
+        sns.boxplot(x=col_box_x, y=col_box_y, data=df, palette="Set3", ax=ax2)
+        plt.xticks(rotation=45) # لضمان ظهور الأسماء الطويلة بشكل واضح
         st.pyplot(fig2)
 
-    with col2:
-        st.markdown("### 3. Price Distribution")
+    st.divider()
+    # --- Section 3: Scatter Plot ---
+    st.markdown("### 3. Relationship Analysis (Scatter Plot)")
+    c1, c2 = st.columns(2)
+    with c1:
+        x_scatter = st.selectbox("X-axis:", numeric_columns, key='x_scat')
+    with c2:
+        y_scatter = st.selectbox("Y-axis:", numeric_columns, key='y_scat')
+
+    if x_scatter and y_scatter:
         fig3, ax3 = plt.subplots()
-        sns.boxplot(x="Condition", y="Price", data=df, palette="Set2", ax=ax3)
-        ax3.set_title("Price by Vehicle Condition")
+        sns.scatterplot(x=x_scatter, y=y_scatter, data=df, ax=ax3)
         st.pyplot(fig3)
